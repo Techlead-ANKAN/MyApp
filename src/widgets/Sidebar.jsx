@@ -18,7 +18,7 @@ const navItems = [
   { name: 'Calendar', path: ROUTES.CALENDAR, icon: Calendar },
   { name: 'Gym', path: ROUTES.GYM, icon: Dumbbell },
   { name: 'Gym Admin', path: ROUTES.GYM_ADMIN, icon: Wrench },
-  { name: 'Learning', path: ROUTES.LEARNING, icon: GraduationCap },
+  // { name: 'Learning', path: ROUTES.LEARNING, icon: GraduationCap },
 ]
 
 export default function Sidebar({ isOpen, onClose }) {

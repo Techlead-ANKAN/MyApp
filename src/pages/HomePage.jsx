@@ -10,6 +10,7 @@ export default function HomePage() {
   // Today's tasks pulled from Supabase (mirrors Calendar logic)
   const [todayCounts, setTodayCounts] = useState({ done: 0, total: 0 })
   const [gymTodayDone, setGymTodayDone] = useState(false)
+  const [totals, setTotals] = useState({ tasksDoneAll: 0, gymSessionsThisMonth: 0 })
 
   useEffect(() => {
     const loadToday = async () => {
@@ -49,6 +50,38 @@ export default function HomePage() {
       } catch {
         // Table may not exist yet; treat as not done
         setGymTodayDone(false)
+      }
+
+      // Aggregate stats
+      try {
+        // Total tasks completed (all time)
+        const { count: doneAllCount } = await supabase
+          .from('tasks')
+          .select('id', { count: 'exact', head: true })
+          .eq('status', 'done')
+
+        // Gym sessions completed this month
+        const toKey = (d) => {
+          const yyyy = d.getFullYear()
+          const mm = String(d.getMonth() + 1).padStart(2, '0')
+          const dd = String(d.getDate()).padStart(2, '0')
+          return `${yyyy}-${mm}-${dd}`
+        }
+        const monthStart = new Date(now.getFullYear(), now.getMonth(), 1)
+        const monthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0)
+        const { count: gymMonthCount } = await supabase
+          .from('gym_day_status')
+          .select('day_date', { count: 'exact', head: true })
+          .eq('is_done', true)
+          .gte('day_date', toKey(monthStart))
+          .lte('day_date', toKey(monthEnd))
+
+        setTotals({
+          tasksDoneAll: doneAllCount || 0,
+          gymSessionsThisMonth: gymMonthCount || 0,
+        })
+      } catch {
+        setTotals({ tasksDoneAll: 0, gymSessionsThisMonth: 0 })
       }
     }
     loadToday()
@@ -103,18 +136,14 @@ export default function HomePage() {
           <TrendingUp className="w-6 h-6 text-accent-blue" />
           <span>Quick Stats Overview</span>
         </h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="p-6 rounded-xl bg-gradient-to-br from-accent-blue/10 to-transparent border border-white/10 hover:border-accent-blue/30 transition-all duration-300">
             <p className="text-gray-400 text-sm mb-2 font-medium">Total Tasks Completed</p>
-            <p className="text-4xl font-bold text-white">127</p>
+            <p className="text-4xl font-bold text-white">{totals.tasksDoneAll}</p>
           </div>
           <div className="p-6 rounded-xl bg-gradient-to-br from-accent-orange/10 to-transparent border border-white/10 hover:border-accent-orange/30 transition-all duration-300">
             <p className="text-gray-400 text-sm mb-2 font-medium">Gym Sessions This Month</p>
-            <p className="text-4xl font-bold text-white">18</p>
-          </div>
-          <div className="p-6 rounded-xl bg-gradient-to-br from-accent-purple/10 to-transparent border border-white/10 hover:border-accent-purple/30 transition-all duration-300">
-            <p className="text-gray-400 text-sm mb-2 font-medium">Learning Milestones</p>
-            <p className="text-4xl font-bold text-white">8/15</p>
+            <p className="text-4xl font-bold text-white">{totals.gymSessionsThisMonth}</p>
           </div>
         </div>
       </Card>

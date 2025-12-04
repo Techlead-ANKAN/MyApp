@@ -9,7 +9,7 @@ import SignupPage from '@/pages/SignupPage'
 import CalendarPage from '@/pages/CalendarPage'
 import GymPage from '@/pages/GymPage'
 import GymAdmin from '@/pages/GymAdmin'
-import LearningPage from '@/pages/LearningPage'
+// import LearningPage from '@/pages/LearningPage'
 import ProfilePage from '@/pages/ProfilePage'
 import NotFoundPage from '@/pages/NotFoundPage'
 
@@ -33,10 +33,10 @@ const router = createBrowserRouter([
         path: 'gym/admin',
         element: <ProtectedRoute><GymAdmin /></ProtectedRoute>,
       },
-      {
-        path: 'learning',
-        element: <ProtectedRoute><LearningPage /></ProtectedRoute>,
-      },
+      // {
+      //   path: 'learning',
+      //   element: <ProtectedRoute><LearningPage /></ProtectedRoute>,
+      // },
       {
         path: 'profile',
         element: <ProtectedRoute><ProfilePage /></ProtectedRoute>,

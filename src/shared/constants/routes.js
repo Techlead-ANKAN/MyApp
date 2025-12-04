@@ -5,7 +5,7 @@ export const ROUTES = {
   CALENDAR: '/calendar',
   GYM: '/gym',
   GYM_ADMIN: '/gym/admin',
-  LEARNING: '/learning',
+  // LEARNING: '/learning',
   PROFILE: '/profile',
 }
 
