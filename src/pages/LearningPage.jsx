@@ -1,42 +1,52 @@
-// import Card from '@/shared/components/Card'
-// import Button from '@/shared/components/Button'
-// import { GraduationCap, Plus } from 'lucide-react'
+import Card from '@/shared/components/Card'
+import Button from '@/shared/components/Button'
+import { GraduationCap, BookOpen, Target } from 'lucide-react'
 
-// export default function LearningPage() {
-//   return (
-//     <div className="max-w-7xl mx-auto space-y-6">
-//       {/* Header */}
-//       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-//         <div>
-//           <h2 className="text-3xl font-bold text-white mb-2 tracking-tight">
-//             Learning Path
-//           </h2>
-//           <p className="text-gray-400">
-//             Track your learning milestones and master new skills
-//           </p>
-//         </div>
-//         <Button variant="primary" className="inline-flex items-center space-x-2 shadow-lg shadow-accent-purple/30">
-//           <Plus className="w-5 h-5" />
-//           <span>Add Milestone</span>
-//         </Button>
-//       </div>
+export default function LearningPage() {
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div>
+        <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-100 mb-1">
+          Learning Path
+        </h1>
+        <p className="text-slate-600 dark:text-slate-400 text-sm">
+          Track your learning milestones and master new skills
+        </p>
+      </div>
 
-//       {/* Learning Component - To be implemented */}
-//       <Card className="backdrop-blur-2xl bg-white/[0.02]">
-//         <div className="flex items-center justify-center py-20">
-//           <div className="text-center">
-//             <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-accent-purple/20 to-accent-blue/20 mb-6">
-//               <GraduationCap className="w-10 h-10 text-accent-purple" />
-//             </div>
-//             <h3 className="text-2xl font-bold text-white mb-3">
-//               Learning Tracker Coming Soon
-//             </h3>
-//             <p className="text-gray-400 max-w-md mx-auto">
-//               Organize skills and track your learning progress systematically
-//             </p>
-//           </div>
-//         </div>
-//       </Card>
-//     </div>
-//   )
-// }
+      {/* Coming Soon Card */}
+      <Card className="min-h-[400px] flex items-center justify-center">
+        <div className="text-center max-w-md mx-auto py-12">
+          <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-primary-100 dark:bg-primary-900/30 mb-6">
+            <GraduationCap className="w-10 h-10 text-primary-600 dark:text-primary-400" />
+          </div>
+          <h2 className="text-2xl font-semibold text-slate-900 dark:text-slate-100 mb-3">
+            Learning Tracker Coming Soon
+          </h2>
+          <p className="text-slate-600 dark:text-slate-400 mb-8">
+            Organize skills, track progress, and achieve your learning goals systematically
+          </p>
+          
+          {/* Feature Preview */}
+          <div className="space-y-3 text-left">
+            <div className="flex items-start gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-800">
+              <BookOpen className="w-5 h-5 text-primary-600 dark:text-primary-400 mt-0.5" />
+              <div>
+                <p className="text-sm font-medium text-slate-900 dark:text-slate-100">Course Tracking</p>
+                <p className="text-xs text-slate-600 dark:text-slate-400">Organize and monitor your learning courses</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-800">
+              <Target className="w-5 h-5 text-primary-600 dark:text-primary-400 mt-0.5" />
+              <div>
+                <p className="text-sm font-medium text-slate-900 dark:text-slate-100">Progress Milestones</p>
+                <p className="text-xs text-slate-600 dark:text-slate-400">Set and achieve learning milestones</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Card>
+    </div>
+  )
+}

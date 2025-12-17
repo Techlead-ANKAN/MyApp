@@ -3,6 +3,7 @@ import { Outlet, useLocation } from 'react-router-dom'
 import Sidebar from './Sidebar'
 import BottomNav from './BottomNav'
 import { ROUTES } from '@/shared/constants/routes'
+import { Menu } from 'lucide-react'
 
 export default function RootLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -16,24 +17,26 @@ export default function RootLayout() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-dark-950 via-dark-900 to-dark-950">
+    <div className="min-h-screen bg-surface-muted dark:bg-slate-950">
       {/* Sidebar */}
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
       {/* Main Content */}
       <div className="min-h-screen flex flex-col">
-        {/* Top toggle (overlay, minimal spacing) */}
+        {/* Top toggle */}
         <button
           onClick={() => setSidebarOpen(true)}
-          className="fixed top-4 left-4 z-30 p-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-white"
+          className="fixed top-4 left-4 z-30 p-2 rounded-lg bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 shadow-sm text-slate-700 dark:text-slate-300 transition-colors duration-200"
           aria-label="Open sidebar"
         >
-          ☰
+          <Menu className="w-5 h-5" />
         </button>
 
-        {/* Page Content */}
-        <main className="flex-1 p-4 md:p-6 pb-20 lg:pb-6">
-          <Outlet />
+        {/* Page Content with proper container */}
+        <main className="flex-1 pb-20 lg:pb-0">
+          <div className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+            <Outlet />
+          </div>
         </main>
       </div>
 

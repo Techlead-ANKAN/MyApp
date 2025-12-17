@@ -20,22 +20,22 @@ export default function Modal({
   }
 
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-md flex items-center justify-center z-50 p-4 animate-fade-in">
+    <div className="fixed inset-0 bg-black/50 dark:bg-black/70 flex items-center justify-center z-50 p-4 animate-fade-in">
       <div
         className={cn(
-          'bg-dark-900/95 backdrop-blur-2xl border border-white/20 rounded-2xl shadow-2xl w-full animate-scale-up',
+          'bg-white dark:bg-slate-900 rounded-2xl shadow-2xl w-full animate-scale-up border border-slate-200 dark:border-slate-800',
           sizes[size],
           className
         )}
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-white/10">
-          <h2 className="text-2xl font-bold text-white">{title}</h2>
+        <div className="flex items-center justify-between p-6 border-b border-slate-200 dark:border-slate-800">
+          <h2 className="text-2xl font-semibold text-slate-900 dark:text-slate-100">{title}</h2>
           <button
             onClick={onClose}
-            className="p-2 rounded-xl hover:bg-white/10 transition-all duration-200"
+            className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors duration-200"
           >
-            <X className="w-5 h-5 text-gray-400 hover:text-white transition-colors" />
+            <X className="w-5 h-5 text-slate-500 dark:text-slate-400" />
           </button>
         </div>
 
@@ -44,7 +44,7 @@ export default function Modal({
 
         {/* Footer */}
         {footer && (
-          <div className="flex items-center justify-end space-x-3 p-6 border-t border-white/10">
+          <div className="flex items-center justify-end gap-3 p-6 border-t border-slate-200 dark:border-slate-800">
             {footer}
           </div>
         )}

@@ -8,56 +8,55 @@ export default {
   theme: {
     extend: {
       colors: {
-        dark: {
-          50: '#f8f9fa',
-          100: '#f1f3f4',
-          200: '#e8eaed',
-          300: '#dadce0',
-          400: '#bdc1c6',
-          500: '#9aa0a6',
-          600: '#80868b',
-          700: '#5f6368',
-          800: '#3c4043',
-          900: '#202124',
-          950: '#0d0e0f',
+        primary: {
+          50: '#eff6ff',
+          100: '#dbeafe',
+          200: '#bfdbfe',
+          300: '#93c5fd',
+          400: '#60a5fa',
+          500: '#3b82f6',
+          600: '#2563eb',
+          700: '#1d4ed8',
+          800: '#1e40af',
+          900: '#1e3a8a',
+          950: '#172554',
         },
-        light: {
-          50: '#fafafa',
-          100: '#f5f5f5',
-          200: '#eeeeee',
-          300: '#e0e0e0',
-          400: '#bdbdbd',
-          500: '#9e9e9e',
-          600: '#757575',
-          700: '#616161',
-          800: '#424242',
-          900: '#212121',
+        surface: {
+          DEFAULT: '#ffffff',
+          muted: '#f3f4f6',
+          border: '#e5e7eb',
         },
-        accent: {
-          blue: '#1976d2',
-          purple: '#7c3aed',
-          green: '#16a34a',
-          orange: '#ea580c',
-          red: '#dc2626',
+        emerald: {
+          400: '#34d399',
+          500: '#10b981',
+          600: '#059669',
+        },
+        amber: {
+          400: '#fbbf24',
+          500: '#f59e0b',
+          600: '#d97706',
+        },
+        rose: {
+          400: '#fb7185',
+          500: '#f43f5e',
+          600: '#e11d48',
         },
       },
-      backdropBlur: {
-        xs: '2px',
-        sm: '4px',
-        md: '12px',
-        lg: '16px',
-        xl: '24px',
-        '2xl': '40px',
-        '3xl': '64px',
+      fontFamily: {
+        sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'],
+      },
+      boxShadow: {
+        'card': '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
+        'card-hover': '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
       },
       animation: {
-        'slide-up': 'slideUp 0.3s ease-out',
+        'slide-up': 'slideUp 0.2s ease-out',
         'scale-up': 'scaleUp 0.2s ease-out',
-        'fade-in': 'fadeIn 0.3s ease-in',
+        'fade-in': 'fadeIn 0.2s ease-in',
       },
       keyframes: {
         slideUp: {
-          '0%': { opacity: '0', transform: 'translateY(20px)' },
+          '0%': { opacity: '0', transform: 'translateY(10px)' },
           '100%': { opacity: '1', transform: 'translateY(0)' },
         },
         scaleUp: {
