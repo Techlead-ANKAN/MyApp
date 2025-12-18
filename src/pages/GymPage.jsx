@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import Card from '@/shared/components/Card'
 import Button from '@/shared/components/Button'
 import Badge from '@/shared/components/Badge'
+import Modal from '@/shared/components/Modal'
 import { Calendar as CalendarIcon, Dumbbell, ChevronRight, Check } from 'lucide-react'
 import { supabase } from '@/lib/supabase/client'
 import { useToast } from '@/shared/hooks/useToast'
@@ -17,6 +18,10 @@ export default function GymPage() {
   const [gymDayName, setGymDayName] = useState(null)
   const [isDone, setIsDone] = useState(false)
   const [loading, setLoading] = useState(true)
+  const [showWorkoutModal, setShowWorkoutModal] = useState(false)
+  const [availableGymDays, setAvailableGymDays] = useState([])
+  const [selectedGymDay, setSelectedGymDay] = useState(null)
+  const [gymDayExercises, setGymDayExercises] = useState([])
   const toast = useToast()
   const navigate = useNavigate()
 
@@ -140,6 +145,81 @@ export default function GymPage() {
       loadMonthAssignments()
     } catch (error) {
       toast.error('Failed to update status')
+      console.error(error)
+    }
+  }
+
+  const openAssignWorkoutModal = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('gym_days')
+        .select('*')
+        .order('name', { ascending: true })
+
+      if (error) throw error
+
+      setAvailableGymDays(data || [])
+      setShowWorkoutModal(true)
+      setSelectedGymDay(null)
+      setGymDayExercises([])
+    } catch (error) {
+      toast.error('Failed to load gym days')
+      console.error(error)
+    }
+  }
+
+  const loadGymDayExercises = async (gymDayId) => {
+    try {
+      const { data, error } = await supabase
+        .from('gym_day_exercises')
+        .select(`
+          *,
+          exercises (name)
+        `)
+        .eq('gym_day_id', gymDayId)
+        .order('exercises(name)', { ascending: true })
+
+      if (error) throw error
+
+      setGymDayExercises(data || [])
+    } catch (error) {
+      toast.error('Failed to load exercises')
+      console.error(error)
+      setGymDayExercises([])
+    }
+  }
+
+  const handleGymDaySelect = (gymDay) => {
+    setSelectedGymDay(gymDay)
+    loadGymDayExercises(gymDay.id)
+  }
+
+  const assignWorkout = async () => {
+    if (!selectedGymDay) {
+      toast.error('Please select a workout day')
+      return
+    }
+
+    const dateKey = toDateKey(selectedDate)
+
+    try {
+      const { error } = await supabase
+        .from('gym_day_assignments')
+        .upsert({
+          day_date: dateKey,
+          gym_day_id: selectedGymDay.id,
+        }, {
+          onConflict: 'day_date'
+        })
+
+      if (error) throw error
+
+      toast.success('Workout assigned successfully!')
+      setShowWorkoutModal(false)
+      loadMonthAssignments()
+      loadDayDetails()
+    } catch (error) {
+      toast.error('Failed to assign workout')
       console.error(error)
     }
   }
@@ -353,7 +433,7 @@ export default function GymPage() {
                 <p className="text-slate-600 dark:text-slate-400 text-sm mb-4">
                   No workout assigned for this day
                 </p>
-                <Button onClick={() => navigate(ROUTES.GYM_ADMIN)}>
+                <Button onClick={openAssignWorkoutModal}>
                   Assign Workout
                 </Button>
               </div>
@@ -361,6 +441,109 @@ export default function GymPage() {
           </div>
         </Card>
       </div>
+
+      {/* Assign Workout Modal */}
+      <Modal
+        isOpen={showWorkoutModal}
+        onClose={() => setShowWorkoutModal(false)}
+        title="Assign Workout"
+        size="lg"
+      >
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Gym Days List */}
+          <div>
+            <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">
+              Select Workout Day
+            </h3>
+            <div className="space-y-2 max-h-[400px] overflow-auto">
+              {availableGymDays.length === 0 ? (
+                <p className="text-sm text-slate-500 dark:text-slate-400 text-center py-8">
+                  No workout days available. Create one in Gym Admin.
+                </p>
+              ) : (
+                availableGymDays.map((gymDay) => (
+                  <button
+                    key={gymDay.id}
+                    onClick={() => handleGymDaySelect(gymDay)}
+                    className={`
+                      w-full p-3 rounded-lg border text-left transition-all duration-200
+                      ${selectedGymDay?.id === gymDay.id
+                        ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20'
+                        : 'border-slate-200 dark:border-slate-700 hover:border-primary-300 dark:hover:border-primary-700 bg-white dark:bg-slate-800'
+                      }
+                    `}
+                  >
+                    <p className="font-medium text-slate-900 dark:text-slate-100">
+                      {gymDay.name}
+                    </p>
+                    {gymDay.description && (
+                      <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">
+                        {gymDay.description}
+                      </p>
+                    )}
+                  </button>
+                ))
+              )}
+            </div>
+          </div>
+
+          {/* Exercise Preview */}
+          <div>
+            <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">
+              Exercises Preview
+            </h3>
+            {selectedGymDay ? (
+              <div className="space-y-2 max-h-[400px] overflow-auto">
+                {gymDayExercises.length === 0 ? (
+                  <p className="text-sm text-slate-500 dark:text-slate-400 text-center py-8">
+                    No exercises in this workout day
+                  </p>
+                ) : (
+                  gymDayExercises.map((exercise, idx) => (
+                    <div
+                      key={idx}
+                      className="p-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50"
+                    >
+                      <p className="font-medium text-slate-900 dark:text-slate-100 text-sm mb-1">
+                        {exercise.exercises?.name || 'Exercise'}
+                      </p>
+                      <div className="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-400">
+                        {exercise.reps_per_set ? (
+                          <>
+                            <span>{exercise.sets} sets × {exercise.reps_per_set} reps</span>
+                            {exercise.weight && <span>@ {exercise.weight} kg</span>}
+                          </>
+                        ) : exercise.duration_minutes ? (
+                          <span>{exercise.sets} sets × {exercise.duration_minutes} min</span>
+                        ) : (
+                          <span>{exercise.sets} sets</span>
+                        )}
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            ) : (
+              <div className="text-center py-8">
+                <Dumbbell className="w-12 h-12 mx-auto text-slate-300 dark:text-slate-600 mb-2" />
+                <p className="text-sm text-slate-500 dark:text-slate-400">
+                  Select a workout day to see exercises
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Modal Footer */}
+        <div className="flex items-center justify-end gap-3 mt-6 pt-4 border-t border-slate-200 dark:border-slate-800">
+          <Button variant="outline" onClick={() => setShowWorkoutModal(false)}>
+            Cancel
+          </Button>
+          <Button onClick={assignWorkout} disabled={!selectedGymDay}>
+            Assign to {selectedDate.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+          </Button>
+        </div>
+      </Modal>
     </div>
   )
 }
